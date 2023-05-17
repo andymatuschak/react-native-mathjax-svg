@@ -15,8 +15,6 @@ const AllPackages =
 const params = {
   ex: 8,
   em: 16,
-  width: 80,
-  inline: true,
   packages: AllPackages.sort().join(", "),
   fontCache: true
 };
@@ -50,17 +48,17 @@ const applyColor = (svgString, fillColor) => {
   return svgString.replace(/currentColor/gim, `${fillColor}`);;
 };
 
-const texToSvg = (textext = "", fontSize = 8) => {
+const texToSvg = (textext = "", fontSize = 8, display = false) => {
   if (!textext) {
     return "";
   }
   const tex = new TeX({ packages: params.packages.split(/\s*,\s*/) });
   const svg = new SVG({ fontCache: params.fontCache ? "local" : "none" });
-  const html = mathjax.document("", { InputJax: tex, OutputJax: svg });
-  const node = html.convert(textext, {
-    display: true,
+  const mathDocument = mathjax.document("", { InputJax: tex, OutputJax: svg });
+  const node = mathDocument.convert(textext, {
+    display,
     em: params.em,
-    ex: params.ex
+    ex: params.ex,
   });
 
   let svgString = adaptor.outerHTML(node) || "";
@@ -78,7 +76,7 @@ const texToSvg = (textext = "", fontSize = 8) => {
 const MathJax = props => {
   const textext = props.children || "";
   const fontSize = props.fontSize ? props.fontSize / 2 : undefined;
-  let svgXml = texToSvg(textext, fontSize);
+  let svgXml = texToSvg(textext, fontSize, props.display);
   svgXml = applyColor(svgXml, props.color ? props.color : 'black');
   return <SvgFromXml xml={svgXml} {...props} />;
 };
