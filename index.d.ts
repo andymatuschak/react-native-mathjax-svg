@@ -5,6 +5,7 @@ export type MathJaxProps = Omit<XmlProps, "xml"> & {
   color?: string;
   fontSize?: number;
   children?: string;
+  display?: boolean;
 };
 
 export default function MathJax(props: MathJaxProps): ReactElement;
